@@ -1,0 +1,196 @@
+#include <algorithm>
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+struct Book {
+  string title;
+  string author;
+  int year;
+};
+
+void printBook(const Book &b) {
+  cout << b.title << " Oleh " << b.author << " (" << b.year << ")" << endl;
+}
+
+bool compareByTitle(const Book &b1, const Book &b2) {
+  return b1.title < b2.title;
+}
+
+bool compareByAuthor(const Book &b1, const Book &b2) {
+  return b1.author < b2.author;
+}
+
+bool compareByYear(const Book &b1, const Book &b2) { return b1.year < b2.year; }
+
+int main() {
+  vector<Book> library = {
+      {"The Time Machine", "H.G Wells", 1895},
+      {"The art of thinking clearly", "Rolf Dobelli", 2011},
+      {"Freakonomics", "Steven D. Levitt & Stephen J. Dubner", 2005},
+  };
+
+  string searchTitle, searchAuthor;
+  int searchYear;
+  int choice;
+
+  do {
+    cout << "1. Tambahkan Buku" << endl;
+    cout << "2. Pencarian Buku" << endl;
+    cout << "3. Tampilkan Buku Berdasarkan Judul" << endl;
+    cout << "4. Tampilkan Buku Berdasarkan Pengarang" << endl;
+    cout << "5. Tampilkan Buku Berdasarkan Tahun" << endl;
+    cout << "6. Keluar" << endl;
+    cout << "Masukkan Pilihan Anda: ";
+    cin >> choice;
+    cout << endl;
+
+    switch (choice) {
+    case 1: {
+      Book b;
+      cout << "Masukkan judul buku: ";
+      cin.ignore();
+      getline(cin, b.title);
+      cout << "Masukkan nama pengarang: ";
+      getline(cin, b.author);
+      cout << "Masukkan tahun terbit: ";
+      cin >> b.year;
+      library.push_back(b);
+      cout << endl;
+      break;
+    }
+    case 2: {
+      bool book_found = false;
+      cout << "Masukkan kriteria pencarian:" << endl;
+      cout << "1. Judul" << endl;
+      cout << "2. Pengarang" << endl;
+      cout << "3. Tahun" << endl;
+      cout << "4. Semua kriteria" << endl;
+      cout << "Masukkan pilihan Anda: ";
+      int searchChoice;
+      cin >> searchChoice;
+      cout << endl;
+
+      string searchTitle = "", searchAuthor = "";
+      int searchYear = 0;
+
+      switch (searchChoice) {
+      case 1: {
+        cout << "Masukkan judul buku: ";
+        cin.ignore();
+        getline(cin, searchTitle);
+        break;
+      }
+      case 2: {
+        cout << "Masukkan nama pengarang: ";
+        cin.ignore();
+        getline(cin, searchAuthor);
+        break;
+      }
+      case 3: {
+        cout << "Masukkan tahun terbit: ";
+        cin >> searchYear;
+        break;
+      }
+      case 4: {
+        cout << "Masukkan judul buku: ";
+        cin.ignore();
+        getline(cin, searchTitle);
+        cout << "Masukkan nama pengarang: ";
+        getline(cin, searchAuthor);
+        cout << "Masukkan tahun terbit: ";
+        cin >> searchYear;
+        break;
+      }
+      default: {
+        cout << "Pilihan Anda salah!" << endl;
+        break;
+      }
+      }
+
+      cout << endl;
+
+      for (const auto &b : library) {
+        bool match = true;
+
+        if (!searchTitle.empty() && b.title != searchTitle) {
+          match = false;
+        }
+
+        if (!searchAuthor.empty() && b.author != searchAuthor) {
+          match = false;
+        }
+
+        if (searchYear != 0 && b.year != searchYear) {
+          match = false;
+        }
+
+        if (match) {
+          printBook(b);
+          book_found = true;
+        }
+      }
+
+      if (!book_found) {
+        cout << "Buku Tidak DITEMUKAN!." << endl;
+      }
+
+      cout << endl;
+      break;
+    }
+
+    case 3: {
+      system("cls");
+      sort(library.begin(), library.end(), compareByTitle);
+      if (library.empty()) {
+        cout << "Tidak Ada Buku!" << endl;
+      } else {
+        cout << "Buku diurutkan berdasarkan judul:" << endl;
+        for (const auto &b : library) {
+          printBook(b);
+        }
+      }
+      cout << endl;
+      break;
+    }
+    case 4: {
+      system("cls");
+      sort(library.begin(), library.end(), compareByAuthor);
+      if (library.empty()) {
+        cout << "Tidak Ada Buku!" << endl;
+      } else {
+        cout << "Buku diurutkan berdasarkan pengarang:" << endl;
+        for (const auto &b : library) {
+          printBook(b);
+        }
+      }
+      cout << endl;
+      break;
+    }
+    case 5: {
+      system("cls");
+      sort(library.begin(), library.end(), compareByYear);
+
+      if (library.empty()) {
+        cout << "Tidak Ada Buku!" << endl;
+      } else {
+        cout << "Buku diurutkan berdasarkan tahun:" << endl;
+        for (const auto &b : library) {
+          printBook(b);
+        }
+      }
+      cout << endl;
+      break;
+    }
+    default:
+      cout << "Pilihan anda salah!. Masukkan kembali pilihan anda dari angka 1 "
+              "- 5."
+           << endl;
+      break;
+    }
+  } while (choice != 6);
+
+  cout << "Keluar..." << endl;
+  return 0;
+}
